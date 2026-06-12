@@ -6,12 +6,13 @@
 * SITI ROSDIYANAH BINTI IDRIS (2415502)
 
 ## 2. Project Overview
-The Bakery Management System is a web-based application developed to streamline daily bakery operations. It provides an efficient platform for managing customer orders, tracking bakery inventories (such as cookies and pastry ingredients), and monitoring sales records. This system helps bakery owners manage and oversee shop operations more efficiently online.
+The Bakery Management System is a web-based application developed using Laravel to streamline bakery operations. The system enables customers to browse bakery products, place orders, manage shopping carts and make table reservations. It also provides administrators with tools to manage products, monitor customer orders, oversee reservations and track order delivery statuses through a centralized dashboard.
 
 ## 3. Project Objectives
-* To understand full-stack development by applying the MVC architecture and creating complete CRUD features for managing menus, orders, and table statuses via GitHub.
-* To secure backend access using user authentication, supported by a relational database schema mapped accurately through ERD and Sequence Diagrams.
-* To design an intuitive, easy-to-use interface for staff while ensuring all menu categories and operations strictly adhere to Islamic and halal standards.
+* To develop a web-based bakery management system using Laravel and the MVC architecture.
+* To implement secure user authentication and role-based access control for customers and administrators.
+* To provide complete CRUD functionality for managing bakery products and order processing.
+* To create a user-friendly interface that improves operational efficiency for bakery staff and customers.
 
 ## 4. Target Users
 * **Customers:** Authenticated end-users who browse the halal-certified product catalogue (cookies and pastries), manage their shopping cart, choose fulfillment methods (delivery or self-pickup), and track their order histories.
@@ -19,18 +20,17 @@ The Bakery Management System is a web-based application developed to streamline 
 
 ## 5. Features and Functionalities
 **Customer Features:**
-* User Registration & Login: Secure account creation, authentication, and role-based login built using Laravel Breeze.
-* Halal-Certified Product Browsing: View available bakery items (cookies and pastries) organized by category with descriptions, images, and prices.
-* Shopping Cart System: Dynamically add items to the cart, adjust quantities, or remove bakery goods before finishing a transaction.
-* Fulfillment Method Selection: Choose between delivery or self-pickup at checkout, providing a delivery address and preferred time if delivery is chosen.
+* User Registration & Login: Secure account creation and role-based login built using Laravel Jetstream.
+* Product Browsing: View available bakery items that organized with descriptions, images and prices.
+* Shopping Cart System: Dynamically add items to the cart, adjust quantities or remove bakery goods before finishing a transaction.
 * Order Placement & Confirmation: Secure checkout that saves transactions directly to the system database and delivers an order confirmation receipt.
-* Order History & Real-Time Status Tracking: Review comprehensive past order details and monitor active orders through lifecycle stages (*Pending, Preparing, and Completed*).
+* Table Reservation: Customers can reserve a table by providing their name, phone number, number of guests, preferred date, and reservation time. Reservation details are stored in the database for administrative review.
 
 **Admin Features:**
-* Admin Dashboard & Reporting: Real-time visibility into daily bakery performance metrics, tracking total revenue, active orders, and data-driven popular products.
-* Menu Management (CRUD): Full authority to add new items to the catalogue, upload product photos, update pricing/descriptions, or delete retired recipes while setting their halal certification status.
-* Order Lifecycle Management: Oversee incoming requests and systematically update order fulfillment workflows from *Pending* to *Preparing* and *Completed* in real time.
-* Customer Account Management: Monitor registered customer profiles, review their cumulative order metrics, and track customer contact records.
+* Admin Dashboard & Reporting: Real-time visibility into tracking total customer users, total foods sold, total orders and delivered product.
+* Product Management (CRUD): Full authority to add new items to the catalogue, upload product photos, update pricing/descriptions, or delete retired recipes.
+* Order Management: Oversee incoming requests and systematically update order fulfillment workflows from *Pending* to *On the way* or even *cancel* in real time.
+* Table Reservation Management: View and manage customer table reservations, including customer phone numbers, number of guests, reservation dates, and reservation times.
 
 ## 6. Tech Stack & Requirements
 * **Framework:** Laravel (PHP)
@@ -40,14 +40,13 @@ The Bakery Management System is a web-based application developed to streamline 
   
 ## 7. Database Design & Key Relationships
 **Database Schema Overview**
-Our database consists of **8 tables** designed to handle user authentication, item categorization, menu details, and transactional order records, fully supporting the system's requirements:
+Our database consists of **16 tables** designed to handle user authentication, products and order records that fully supporting the system's requirements:
 
 **Core Application Tables:**
-* users – Stores user credentials, contact information, and role definitions (Admin vs. Customer) managed via Laravel Breeze.
-* categories – Holds food and beverage categories (e.g., Cookies, Pastries) to ensure systematic menu organization.
-* menus – Contains details of bakery items, including product names, pricing, descriptions, stock availability, and image storage paths.
-* orders – Records customer transactions, storing total amounts, chosen fulfillment methods (Delivery or Self-Pickup), specific delivery details, and order tracking statuses (*Pending, Preparing, Completed*).
-* order_items – Acts as a pivot table that links orders to specific menus, keeping track of the chosen quantity and price for each item in a transaction.
+* users – Stores user email, name, phone number, id and role definitions (Admin vs. Customer) that managed via Laravel Jetstream.
+* food – Holds product display (e.g., Cookies) like title, price, details and uploading image to ensure systematic food organization.
+* orders – Records customer transactions, storing total quantity, amount, delivery status, payment status, changing status. 
+* book – Stores customer table reservation details including customer name, phone number, number of guests and date.
 
 **Laravel System Tables:**
 * migrations – Tracks database schema versions and structural modifications.
@@ -57,10 +56,10 @@ Our database consists of **8 tables** designed to handle user authentication, it
 **Entity Relationship Diagram (ERD):**
 [https://docs.google.com/document/d/1028O5yPoMcmtIEJNZl8K9L12L-x8kHVW8fdmnf2-XnM/edit?usp=sharing](url)
 
-* Users to Orders (One-to-Many): A registered customer can place multiple bakery orders, but each individual order belongs to exactly one user.
-* Categories to Menus (One-to-Many): A specific category can contain various baked items, while each menu item is assigned to exactly one category.
-* Orders to Order Items (One-to-Many): A single order record can contain multiple specific items, breakdown inside the `order_items` table.
-* Menus to Order Items (One-to-Many): A specific menu item can appear across different customer order receipts.
+* Users to Orders (One-to-Many): A registered customer can place multiple cookie orders, but each individual order belongs to exactly one user.
+* Food to Orders (One-to-Many): A bakery product can appear in multiple customer orders, while each order record references a specific product.
+* Users to Book (One-to-Many): A customer can create multiple table reservations, while each reservation belongs to a single customer.
+* Users to Food (One-to-Many): Administrators can manage multiple bakery products through Create, Read, Update and Delete (CRUD) operations.
 
 ## 8. Laravel Components Implementation 
 **Routes(Web.php)**
