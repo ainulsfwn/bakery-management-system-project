@@ -356,6 +356,9 @@ Challenge 3: Troubleshooting Database & Code Mismatches
 * Problem: Customizing the tutorial code into our bakery project caused bakend crashes because database column names and variables did not match perfectly.
 * Solution: Read Laravel's error debugging screens to find the exact file names and broken lines of code, then fixed the column mismatches and syntax typos to stabilize the system.
 
+Challenge 4: Configuring The Password Reset Functionality
+* Problem: Clicking the "Forgot your password?" link caused a system error or failed to load because the local development enviroment lacked a configured mail server to sent out password reset emails.
+* Solution: Configured the .env file with dummy SMTP credentials using Miltrap (or Mailhog) and update the email routing settings in Laravel to allow authentication emails to process safely without crashing the system.
 
 ## Future Enhancements
 Phase 2 features (Potential Improvements)
