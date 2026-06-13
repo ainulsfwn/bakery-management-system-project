@@ -107,9 +107,9 @@ Route::post('/book_table', [HomeController::class, 'book_table']);
 ```
 
 **Controllers**
-  1. **HomeController:** Handles all public-facing and customer operations. This includes displaying the bakery landing page, filtering the menu by halal categories, managing the shopping cart session, processing the order checkout, and displaying the customer's real-time order tracking page.
+  1. **HomeController:** Handles all customer-facing functionalities of the Bakery Management System. This includes displaying the homepage, browsing bakery products, managing the shopping cart, processing customer orders, handling table reservations and allowing customers to view their order information.
   
-  2. **AdminController:** Manages all restricted administrative and backend functionalities. This handles full CRUD operations for the bakery menu (adding, updating, and deleting items), tracking low stock levels, reviewing total sales summaries, and updating order lifecycle tracking statuses (*Pending, Preparing, Completed*).
+  2. **AdminController:** Manages all administrative functionalities of the system. This includes performing CRUD operations for bakery products (Create, Read, Update, Delete), managing customer orders, updating delivery statuses (On the Way, Delivered, Cancelled) and reviewing customer table reservations.
 
 **Models and Relationships**
 
@@ -256,32 +256,34 @@ class User extends Authenticatable
 **Views and User Interface**
 
 Blade Templates Structure:
-- `layouts/app.blade.php` - Main application skeleton layout configured with responsive navigation bars.
+- `layouts/app.blade.php` - Main application layout containing shared navigation menus, authentication components and page structure.
 - `home.blade.php` - Public store landing page displaying the bakery catalog, featured cookies/pastries, and the custom table booking form.
-- `my_cart.blade.php` - Customer's dynamic shopping cart page summarizing selected bakery items, breakdown pricing metrics, and the checkout confirmation trigger.
-- `admin/orders.blade.php` - Administrative master console for the bakery owner to oversee customer requests and update delivery life cycles (*On the way, Delivered, Cancel*).
-- `admin/add_product.blade.php` - Administrative dashboard workspace for uploading new bakery items into the system with images, pricing, and description data.
-- `admin/view_product.blade.php` - Master product inventory grid interface allowing administrators to update bakery item details or trigger product deletions (CRUD).
+- `my_cart.blade.php` - Shopping cart page where customers can review selected items, update quantities, remove products and confirm orders.
+- `admin/orders.blade.php` - Order management page where administrators can view customer orders and update delivery statuses.
+- `admin/add_product.blade.php` - Admin interface used to add new bakery products, including title, description, price and image upload.
+- 'admin/show_food.blade.php' – Product management page displaying all products with Update and Delete functionalities.
 
 Design Features:
-- **Responsive Architecture:** Built using standard CSS framework guidelines to ensure clean, mobile-first compatibility on smartphones, tablets, and desktop viewports.
-- **Role-Based Layout Rendering:** Blade authentication components dynamically alter navigation bar menu options based on user access levels (Admin dashboard links vs. Customer storefront tools).
-- **Interactive Core Elements:** Session-driven customer shopping cart updates, immediate validation error alerts, and intuitive confirmation triggers for custom table reservations.
+- *Responsive User Interface*: Developed using Bootstrap and Blade Templates to ensure compatibility across desktop.
+- *Role-Based Navigation*: Different menus and functionalities are displayed based on whether the user is an Administrator or Customer.
+- *Interactive CRUD Operations*: Administrators can efficiently manage bakery products through Create, Read, Update and Delete operations.
+- *Shopping Cart & Order Processing*: Customers can add products to the cart, modify quantities and place orders through an intuitive interface.
+- *Table Reservation System*: Customers can submit reservation requests, while administrators can review and manage booking records.
 
 **User Authentication System**
 
 Authentication Feature:
-* **Registration System:** Secure account creation handling unique user credentials, email logging, and automatic password confirmation fields.
+* **Registration System:** Allows new users to create accounts securely using Laravel Jetstream.
 * **Login System:** Protected authentication login interface processing user credentials with direct support for session token persistence.
-* **Password Reset:** Secured fallback mechanisms allowing registered accounts to recover or update credentials when locked out.
-* **Role-Based Access Control (RBAC):** Strict security boundaries separating access levels; verified customers are routed to the storefront checkout pages, while bakery administrators are directed to the main backend product management tools.
-* **Profile Management:** Basic personalized configuration options letting active users oversee their core account data safely within the platform.
-
-Security Measures :
+* **Password Reset:** Provides account recovery functionality for users who forget their passwords (in the future).
+* **Role-Based Access Control (RBAC):** Separates customer and administrator privileges to protect administrative functionalities.
+* **Profile Management:** Allows authenticated users to manage and update their account information.
+  
+**Security Measures : **
 * **Password Encryption:** All password strings are fully encrypted and hashed using Laravel's built-in cryptographic hashing (`bcrypt`) prior to database insertion.
-* **Cross-Site Request Forgery (CSRF) Protection:** Active application state security tokens embedded automatically inside every frontend web form to block unauthorized third-party command executions.
+* **Cross-Site Request Forgery (CSRF) Protection:** Laravel automatically generates CSRF tokens to protect forms from unauthorized requests.
 * **Input Validation & Sanitization:** Server-side validation rules enforced across input fields to clean incoming text, ensure proper pricing values, and prevent data corruption during store uploads.
-* **Route Middleware Protection:** Restrictive route middleware mapping implemented across `web.php` to immediately block unauthenticated access attempts and auto-redirect guests back to the safe login panel.
+* **Route Middleware Protection:** Authentication middleware restricts access to protected routes and prevents unauthorized access to administrative pages.
 
 ## 📹 9. Demo Video Link
 * 🔗 [Watch Our Project Presentation & Demo Video Here](MASUKKAN_LINK_VIDEO_RAKAMAN_KUMPULAN)
@@ -315,49 +317,47 @@ bashphp artisan serve npm run dev
 
 USER FUNCTIONALITY TESTING 
 * User registration and login system
-* Bakery browsing and menu display
+* Product browsing and review
 * Shopping cart add/remove functionality
 * Order placement and confirmation
-* User can do for booking table 
+* Table reservation submission
 
 ADMIN FUNCTIONALITY TESTING
-* Bakery owner menu management
-* Admin user management
-* Admin can add product
-* Admin can view product
-* Admin can update and delete the product
-* Admin can change the status either status is 'On The Way', 'Delivered', 'Cancel'.
-* Admin can view the reservation that customer book.
-
+* Admin registration and login system
+* Product management (Create, Read, Update, Delete)
+* Order management
+* Delivery status updates (On the Way, Delivered, Cancelled)
+* Reservation management
+* Viewing customer table reservation
+  
 ## Browser Compatibility
-
 * Google Chrome
 * Microsoft Edge
 
 ## Performance Testing
 
-* Page load time unser 3 seconds
-* Optimisation of database queries
-* Implemented compression of image
-* Testing responsive design across a range of screen size
-
+* Page load time maintained below 3 seconds under normal usage
+* Image upload optimization for faster loading
+* Database query optimization for improved performance
+* Responsive design testing across desktop.
+  
 ## Challenges Faced and Solutions
 
 Challenge 1: Transferring Data from Cart to Orders
-* Problem: When a customer checks out, the system must copy multiple items from the temporary cart table into the permanent orders table and clear the cart immediately to prevent double charging.
+* Problem: When a customer completed the checkout process, all selected products needed to be transferred from the temporary cart table into the orders table while ensuring duplicate orders were not created.
 * Solution: Used a laravel foreach loop in the controller to grab every item from the user's cart, save a copy into the orders table and the delete it from the cart.
 
-Challenge 2: Managing Order Status Safely
+Challenge 2: Preventing Accidental Order Status Changes
 * Problem: The admin needs to update status, but we had to prevent accidental clicks that change a status by mistake.
 * Solution: Created separate routes for each function in the controller and added a Javascript confirmation popup (onclick="return confirm(..)") to ask "Are You Sure?" before changing the database.
 
-Challenge 3: Troubleshooting Database & Code Mismatches
-* Problem: Customizing the tutorial code into our bakery project caused bakend crashes because database column names and variables did not match perfectly.
-* Solution: Read Laravel's error debugging screens to find the exact file names and broken lines of code, then fixed the column mismatches and syntax typos to stabilize the system.
+Challenge 3: Resolving Database and Code Mismatches
+* Problem: During development, several application errors occurred because database column names did not always match the variable names used within the Laravel controllers and Blade templates.
+* Solution: Laravel's debugging tools and error messages were used to identify problematic files and code sections.
 
-Challenge 4: Configuring The Password Reset Functionality
-* Problem: Clicking the "Forgot your password?" link caused a system error or failed to load because the local development enviroment lacked a configured mail server to sent out password reset emails.
-* Solution: Configured the .env file with dummy SMTP credentials using Miltrap (or Mailhog) and update the email routing settings in Laravel to allow authentication emails to process safely without crashing the system.
+Challenge 4: Image Upload and Storage Management
+* Problem: Uploaded product images were not displaying correctly because image paths and storage locations were not configured consistently.
+* Solution: A dedicated food_images directory was created within the public folder. Uploaded files were assigned unique names using timestamps, stored correctly and linked to the corresponding product records in the database.
 
 ## Future Enhancements
 Phase 2 features (Potential Improvements)
@@ -367,6 +367,8 @@ Phase 2 features (Potential Improvements)
 * **Customer Reviews and Rating :** Enable customers to rate bakery products and provide feedback
 * **Mobile Friendly Application :** Develop a dedicated mobile application for Android and IOS users
 * **Loyalty and Reward Program :** Provide points or discounts for returning customers to encourage repeat purchases.
+* **Email Verification and Password Recovery:** Implement email verification and secure password reset functionality to improve account security and user authentication.
+* **User's Order History and Order Tracking:** Provide customers with a dedicated dashboard to view previous purchases, review order history and track the status of current orders in real time (in process, completed or cancel).
 
 ## Scalability CONSIDERATION
 
@@ -384,7 +386,7 @@ Phase 2 features (Potential Improvements)
 * **Complete CRUD Operation Development :** Proficient in building CRUD functions for bakery menu management, order status, updates, delete and table booking system
 * **Databased Design(MySQL) :** Learn how to design relational database tables and manage them through Laravel Migrations
 * **Responsive Frontend(Blade & Bootstrap :** Able to build user-friendly and responsive interface(UI) on various screen sizes using Blade Template and Bootstrap
-* **Version Control(Git & GitHub): ** Improve skills in managing, sharing and merging project code in groups using GitHub
+* **Version Control(Git & GitHub):** Improve skills in managing, sharing and merging project code in groups using GitHub
 
 * **Soft Skills Develop**
 
@@ -407,7 +409,7 @@ Phase 2 features (Potential Improvements)
 
 ## Key Achivements
 
-* Successfully developed a functional Bakery Management System with dynamic features like menus, order product and a table booking.
+* Successfully developed a functional Bakery Management System with dynamic features like product, order product and a table booking.
 * Successfully separated the website into two layouts such as customer interface and a private management dashboard for the admin interface.
 * Implemented full CRUD operations, allowing the admin to add, view, update and delete the products easily.
 * Designed a clean and user-friendly interface using Bootstrap that looks good on laptop screens.
@@ -417,5 +419,5 @@ Phase 2 features (Potential Improvements)
 
 * This project gave us great hands-on experience in full-stack web application. We did not just improve our coding skills, but we also learned how to work together as a team, solve coding errors and manage our time well. Professional web development scenarios can immediately benefit from the abilities acquired through this project.
 
-* Project Completion Date:11/6/2026
+* **Project Completion Date:** 11 June 2026
 * Course:BIIT 2305 Web Application Development
