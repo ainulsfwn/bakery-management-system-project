@@ -286,7 +286,7 @@ Authentication Feature:
 * **Route Middleware Protection:** Authentication middleware restricts access to protected routes and prevents unauthorized access to administrative pages.
 
 ## 📹 9. Demo Video Link
-* 🔗 [Watch Our Project Presentation & Demo Video Here](MASUKKAN_LINK_VIDEO_RAKAMAN_KUMPULAN)
+* 🔗 [Watch Our Project Presentation & Demo Video Here](https://youtu.be/6lxmO-devk8)
 
 ## Installation and Setup Instructions
 * **Prerequisites :**
